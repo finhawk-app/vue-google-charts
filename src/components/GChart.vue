@@ -5,41 +5,37 @@
 <script>
 import loadGoogleCharts from '../lib/google-charts-loader'
 import debounce from 'debounce'
-let chartsLib = null
+let chartsLib = null;
+
+class ChartDef {
+  constructor() {
+    this.type = '';
+    this.data = [];
+    this.options = {};
+    this.events = null;
+    this.createChart = null;
+  }
+}
+
+class ChartCommonSettings {
+  constructor() {
+    this.settings = {
+      packages: ['corechart', 'table']
+    };
+    this.version = 'current';
+    this.resizeDebounce = 200;
+  }
+}
+
 export default {
   name: 'GChart',
 
   props: {
-    type: {
-      type: String
+    chartDefs: {
+      type: Array
     },
-    data: {
-      type: [Array, Object],
-      default: () => []
-    },
-    options: {
-      type: Object,
-      default: () => ({})
-    },
-    version: {
-      type: String,
-      default: 'current'
-    },
-    settings: {
-      type: Object,
-      default: () => ({
-        packages: ['corechart', 'table']
-      })
-    },
-    events: {
-      type: Object
-    },
-    createChart: {
-      type: Function
-    },
-    resizeDebounce: {
-      type: Number,
-      default: 200
+    chartCommonSettings: {
+      type: ChartCommonSettings
     }
   },
 
@@ -85,10 +81,14 @@ export default {
   },
 
   methods: {
-    drawChart () {
+    drawSingleChart () {
       if (!chartsLib || !this.chartObject) return
       const data = this.getValidChartData()
       if (data) this.chartObject.draw(data, this.options)
+    },
+    drawChart () {
+      // TODO:
+      // 1. Add another div for each chart
     },
 
     getValidChartData () {
